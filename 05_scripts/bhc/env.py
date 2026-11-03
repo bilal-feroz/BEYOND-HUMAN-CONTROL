@@ -98,7 +98,7 @@ def build_world(scene):
     # colours (linear radiance)
     zen = (0.0035, 0.0042, 0.0050, 1)
     hor = (0.0220, 0.0210, 0.0200, 1)
-    coast = (0.070, 0.030, 0.0090, 1)
+    coast = (0.046, 0.031, 0.019, 1)     # desaturated: shots facing the coast went muddy brown
     moon = (0.090, 0.094, 0.098, 1)
     m1 = N("ShaderNodeMix"); m1.data_type = 'RGBA'
     L(bandp.outputs[0], m1.inputs["Factor"])
@@ -281,7 +281,7 @@ def water_material():
     f2 = N("ShaderNodeMath"); f2.operation = 'MULTIPLY'; f2.use_clamp = True
     L(cr.outputs["Result"], f2.inputs[0]); L(nzr.outputs["Result"], f2.inputs[1])
     f2b = N("ShaderNodeMath"); f2b.operation = 'MULTIPLY_ADD'; f2b.use_clamp = True
-    L(cr.outputs["Result"], f2b.inputs[0]); f2b.inputs[1].default_value = 0.5; L(f2.outputs[0], f2b.inputs[2])
+    L(cr.outputs["Result"], f2b.inputs[0]); f2b.inputs[1].default_value = 0.22; L(f2.outputs[0], f2b.inputs[2])   # patchy, not a snowfield
     foam0 = N("ShaderNodeMath"); foam0.operation = 'MAXIMUM'
     L(f1.outputs[0], foam0.inputs[0]); L(f2b.outputs[0], foam0.inputs[1])
     afw = N("ShaderNodeAttribute"); afw.attribute_name = "flat_w"
@@ -333,10 +333,10 @@ def water_material():
     return m
 
 
-def build_underwater(coll, top_z=-0.35, density=0.18):
+def build_underwater(coll, top_z=-0.35, density=0.15):
     """ENV-02 murk: turbid Gulf water at night, as a separate box below a flat top."""
     def dens(nt, pv):
-        pv.inputs["Color"].default_value = (0.07, 0.15, 0.12, 1)
+        pv.inputs["Color"].default_value = (0.13, 0.26, 0.21, 1)      # enough scatter to silhouette the legs
         pv.inputs["Absorption Color"].default_value = (0.22, 0.52, 0.42, 1)
         pv.inputs["Density"].default_value = density
         pv.inputs["Anisotropy"].default_value = 0.72
@@ -545,7 +545,7 @@ def _whitewater_gn(ocean, mat):
     patchy = g.math("MAXIMUM", g.math("MULTIPLY", g.math("SUBTRACT", nz.outputs["Fac"], 0.45), 4.0), 0.0)
     w = g.math("MULTIPLY", w, patchy)
     # after the break the crest mask balloons (2M instances crashed the 4 GB GPU): far fewer, larger clumps
-    w = g.math("MULTIPLY", w, g.math("MULTIPLY_ADD", brk, -0.985, 1.0))
+    w = g.math("MULTIPLY", w, g.math("SUBTRACT", 1.0, brk))     # after the break the shader foam carries it (clumps read as rocks)
     dp = g.n("GeometryNodeDistributePointsOnFaces", distribute_method='RANDOM')
     g.link(oi.outputs["Geometry"], dp.inputs["Mesh"])
     g.link(w, dp.inputs["Density"])

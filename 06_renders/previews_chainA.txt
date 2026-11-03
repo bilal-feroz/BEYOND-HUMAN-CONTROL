@@ -1,2 +1,6 @@
 S11: FAILED  295s 
 S01: OK 120/120 215s RESULT shot=S01 frames=1-120 build_s=3.2 render_s=204.3 out=C:\Users\bilal\Desktop\BEYOND-HUMAN-CONTROL\06_renders\previews\S01
+S03: OK 96/96 176s RESULT shot=S03 frames=217-312 build_s=3.6 render_s=166.3 out=C:\Users\bilal\Desktop\BEYOND-HUMAN-CONTROL\06_renders\previews\S03
+S05: OK 96/96 196s RESULT shot=S05 frames=385-480 build_s=3.4 render_s=187.4 out=C:\Users\bilal\Desktop\BEYOND-HUMAN-CONTROL\06_renders\previews\S05
+S07: OK 96/96 175s RESULT shot=S07 frames=601-696 build_s=3.1 render_s=167.2 out=C:\Users\bilal\Desktop\BEYOND-HUMAN-CONTROL\06_renders\previews\S07
+S09: OK 96/96 173s RESULT shot=S09 frames=769-864 build_s=3.7 render_s=164.1 out=C:\Users\bilal\Desktop\BEYOND-HUMAN-CONTROL\06_renders\previews\S09

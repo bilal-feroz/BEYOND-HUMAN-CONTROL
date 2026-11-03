@@ -66,7 +66,7 @@ def _usv_path(T):
     """S11: withdraws, turning away to starboard. S12: holds station down-drift of the person."""
     if T >= core.TIME_CUT_T:
         dt = T - core.TIME_CUT_T
-        return 9.4 - 0.06 * dt, 5.4 - 0.05 * dt, 215.0
+        return 11.6 - 0.08 * dt, 7.2 - 0.06 * dt, 220.0
     x, y = POS["usv"]
     h = 18.0
     t = core.DECISION
@@ -89,7 +89,7 @@ def _gust(T, seed):
 def build_heli(coll, f0, f1, target):
     """FX-06: a rescue helicopter's searchlight approaching through the haze (S12)."""
     root = core.empty("Heli", coll, (0, 0, 0), size=2.0)
-    a, b = Vector((-25.0, 175.0, 32.0)), Vector((-12.0, 105.0, 26.0))
+    a, b = Vector((-30.0, 170.0, 18.0)), Vector((-14.0, 100.0, 15.0))
     for f, p in ((f0, a), (f1, b)):
         root.location = p
         root.keyframe_insert("location", frame=f)
@@ -204,7 +204,8 @@ def build_master(frame, underwater=False, flatten=None, spray_count=90000, air_m
         if name == "UAV_2":
             core.flash(sock_, light, core.film_frame(t), frames=2, base=(0.0, 0.0), peak=(900.0, 40.0))
         else:
-            core.flash(sock_, light, core.film_frame(t), frames=3, base=(1.5, 0.05), peak=(60.0, 2.5))
+            idle = 3.5 if name == "USV_1" else 1.5
+            core.flash(sock_, light, core.film_frame(t), frames=3, base=(idle, 0.05), peak=(60.0, 2.5))
 
     # ---- atmosphere and water FX (built after the floats so sampling above stays fast)
     env.build_air_fog(C["ENV"])

@@ -75,7 +75,7 @@ def s01(M, f0, f1):
 def s02(M, f0, f1):
     cam = new_cam(M, "CAM_S02", 18, 5.6, 2.5)
     zc = water_z(M, 6.3, 1.4, (f0 + f1) // 2)
-    move(cam, f0, f1, (6.3, 1.4, zc + 0.0), (2.4, -0.6, 1.4), (6.3, 1.4, zc + 0.5), (2.4, -0.6, 1.8), focus=(2.5, 2.6))
+    move(cam, f0, f1, (6.3, 1.4, zc + 0.12), (2.4, -0.6, 1.45), (6.3, 1.4, zc + 0.55), (2.4, -0.6, 1.8), focus=(2.5, 2.6))
     return cam
 
 
@@ -103,10 +103,10 @@ def tame_glare(k):
 
 def s04(M, f0, f1):
     cam = new_cam(M, "CAM_S04", 35, 4.0, 8.0)
-    zc = water_z(M, -12.6, -9.9, (f0 + f1) // 2)
+    zc = water_z(M, -9.0, -12.6, (f0 + f1) // 2)
     u = M["usv"]["root"]
     tgt = world(u, (0.6, 0, 1.3))
-    a0, a1 = Vector((-12.6, -9.9, zc + 0.5)), Vector((-12.1, -10.3, zc + 0.6))
+    a0, a1 = Vector((-9.0, -12.6, zc + 0.5)), Vector((-8.3, -12.8, zc + 0.6))     # aft quarter: hull profile, crest beyond
     move(cam, f0, f1, a0, tgt, a1, tgt + Vector((0.3, 0.1, 0.1)), focus=((tgt - a0).length, (tgt - a1).length))
     tame_glare(0.5)
     return cam
@@ -114,7 +114,7 @@ def s04(M, f0, f1):
 
 def s05(M, f0, f1):
     cam = new_cam(M, "CAM_S05", 20, 4.0, 3.0)
-    move(cam, f0, f1, (-1.7, -5.0, -5.6), (4.2, 0.0, -1.2), (-1.35, -4.6, -5.35), (4.2, 0.0, -0.9))
+    move(cam, f0, f1, (-1.9, -4.6, -5.6), (3.4, -1.2, -1.2), (-1.55, -4.25, -5.35), (3.5, -1.0, -0.9))
     return cam
 
 
@@ -122,6 +122,7 @@ def s06(M, f0, f1):
     cam = new_cam(M, "CAM_S06", 16, 8.0, 2.4)
     zc = water_z(M, 5.9, 1.6, (f0 + f1) // 2)
     M["s06_zc"] = zc
+    bpy.data.objects["AUV_1_Light"].data.energy = 320     # it faces the camera here: a soft backlight, not a flood
     # x/y/rotation keyed; z is left unkeyed so each dome-port pass can set it (+/- 3 cm)
     for f in list(range(f0, f1, 4)) + [f1]:
         k = _smooth((f - f0) / (f1 - f0))
@@ -154,9 +155,9 @@ def s08(M, f0, f1):
 
 
 def s09(M, f0, f1):
-    cam = new_cam(M, "CAM_S09", 28, 5.6, 12.0)
-    zc = water_z(M, -1.0, -15.0, (f0 + f1) // 2)
-    move(cam, f0, f1, (-1.0, -15.2, zc + 0.9), (-0.6, -1.5, 0.7), (-0.75, -14.2, zc + 0.95), (-0.5, -1.5, 0.75))
+    # elevated oblique across the crest: the closest machine (left), the breaking lip, the person (right)
+    cam = new_cam(M, "CAM_S09", 24, 8.0, 19.0)     # 10 m up: the line of sight to the person clears the crest
+    move(cam, f0, f1, (-3.6, -17.6, 10.6), (-0.5, -2.6, 0.0), (-3.1, -16.9, 10.1), (-0.3, -2.4, 0.1))
     return cam
 
 
@@ -189,7 +190,7 @@ def s11(M, f0, f1):
 
 def s12(M, f0, f1):
     cam = new_cam(M, "CAM_S12", 35, 5.6, 15.0)
-    move(cam, f0, f1, (2.0, -14.5, 4.5), (3.3, 0.6, 3.3), (2.05, -14.35, 4.45), (3.3, 0.6, 3.2))
+    move(cam, f0, f1, (2.0, -14.5, 4.5), (3.6, 0.6, 2.5), (2.05, -14.35, 4.45), (3.6, 0.6, 2.4))
     return cam
 
 
@@ -319,6 +320,9 @@ def main():
                                os.path.join(outs["below"], f"S06_below_{f:04d}.png"),
                                os.path.join(dst, f"S06_{f:04d}.png"))
             outs[""] = dst
+            import shutil
+            for side in ("above", "below"):
+                shutil.rmtree(outs[side], ignore_errors=True)     # disk: keep only the composite
         else:
             outs[""] = core.path("06_renders", a.out, f"{shot}_{a.ver}_f{frame:04d}.png")
             dome_composite(outs["above"], outs["below"], outs[""])

@@ -1,0 +1,6 @@
+S12: OK 144/144 804s RESULT shot=S12 frames=1057-1200 build_s=83.8 render_s=715.3 out=C:\Users\bilal\Desktop\BEYOND-HUMAN-CONTROL\06_renders\previews\S12
+S02: OK 96/96 170s RESULT shot=S02 frames=121-216 build_s=3.6 render_s=161.3 out=C:\Users\bilal\Desktop\BEYOND-HUMAN-CONTROL\06_renders\previews\S02
+S04: OK 72/72 133s RESULT shot=S04 frames=313-384 build_s=3.8 render_s=123.6 out=C:\Users\bilal\Desktop\BEYOND-HUMAN-CONTROL\06_renders\previews\S04
+S06: OK 120/120 544s RESULT shot=S06 frames=481-600 build_s=4.5 render_s=534.4 out=C:\Users\bilal\Desktop\BEYOND-HUMAN-CONTROL\06_renders\previews\S06
+S08: OK 72/72 98s RESULT shot=S08 frames=697-768 build_s=2.8 render_s=91.1 out=C:\Users\bilal\Desktop\BEYOND-HUMAN-CONTROL\06_renders\previews\S08
+S10: OK 120/120 160s RESULT shot=S10 frames=865-984 build_s=2.7 render_s=153.2 out=C:\Users\bilal\Desktop\BEYOND-HUMAN-CONTROL\06_renders\previews\S10

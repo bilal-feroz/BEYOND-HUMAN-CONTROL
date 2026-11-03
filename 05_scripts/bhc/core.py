@@ -415,6 +415,7 @@ def render_setup(scene, res=(1920, 1080), pct=100, samples=64, quality="final", 
     r.image_settings.file_format = 'PNG'
     r.image_settings.color_mode = 'RGB'
     r.image_settings.color_depth = '16'
+    r.image_settings.compression = 90          # lossless; disk is the constraint (8.8 MB/frame at 15)
     ee = scene.eevee
     ee.taa_render_samples = samples
     setp(ee, "use_raytracing", True)

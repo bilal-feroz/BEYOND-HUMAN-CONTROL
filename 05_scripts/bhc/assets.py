@@ -217,7 +217,7 @@ def build_uav(coll, name, P, variant="search"):
 def _status_led(coll, root, name, loc, r):
     mat = emissive(f"BHC_Status_{name}", (1.0, 0.55, 0.12), 1.5)
     b = bmesh.new()
-    bm_sphere(b, r, loc=loc, segs=12, rings=6)
+    bm_sphere(b, r, loc=loc, segs=24, rings=12)
     obj_from_bm(f"{name}_StatusLED", b, coll, mat, root)
     light = point_light(f"{name}_StatusL", coll, Vector(loc) + Vector((0, 0, 0.03)), (1.0, 0.55, 0.12), 0.05, 0.01, root)
     return (mat.node_tree.nodes["Emission"].inputs["Strength"], light)
@@ -381,11 +381,11 @@ def build_usv(coll, name, P):
         ("amber", (mast_x, -0.15, sheer0 + 2.5), P["led_amber"], (1, 0.5, 0.04), 1.6),   # on a bracket, clear of the mast
     ):
         lb = bmesh.new()
-        bm_sphere(lb, 0.03, loc=loc, segs=12, rings=6)
+        bm_sphere(lb, 0.03, loc=loc, segs=24, rings=12)
         obj_from_bm(f"{name}_Light_{key}", lb, coll, mat, root)
         lights[key] = point_light(f"{name}_L_{key}", coll, Vector(loc) + Vector((0, 0, 0.04)), col, pw, 0.02, root)
     core.key_time_linear(radar, "rotation_euler[2]", lambda t: 2 * math.pi * 0.4 * t)
-    amber = emissive("BHC_Status_USV_1", (1.0, 0.5, 0.06), 12.0)
+    amber = emissive("BHC_Status_USV_1", (1.0, 0.5, 0.06), 3.5)
     bpy.data.objects[f"{name}_Light_amber"].data.materials[0] = amber
     lights["amber"].data.energy = 1.0
     _usv_details(coll, root, P, sheer0, mast_x)
@@ -483,7 +483,7 @@ def build_auv(coll, name, P):
     lb = bmesh.new()
     bm_cyl(lb, 0.03, 0.008, loc=(0.958, 0, 0), rot=ROT_Y90, segs=20)
     obj_from_bm(f"{name}_Lamp", lb, coll, P["searchlens"], root)
-    sp = spot_light(f"{name}_Light", coll, (0.97, 0, 0), (1, 0, 0), 900, angle_deg=34, blend=0.6, temp=5200, radius=0.03, parent=root)
+    sp = spot_light(f"{name}_Light", coll, (0.97, 0, 0), (1, 0, 0), 1600, angle_deg=34, blend=0.6, temp=5200, radius=0.03, parent=root)
     return {"root": root, "spot": sp, "status": _status_led(coll, root, name, (-0.1, 0, 0.212), 0.01)}
 
 
