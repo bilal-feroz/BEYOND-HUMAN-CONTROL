@@ -277,7 +277,7 @@ def water_material():
     f1 = N("ShaderNodeMath"); f1.operation = 'MULTIPLY'; f1.use_clamp = True
     L(af.outputs["Fac"], f1.inputs[0]); L(nzr.outputs["Result"], f1.inputs[1])
     cr = N("ShaderNodeMapRange"); L(ac.outputs["Fac"], cr.inputs["Value"])
-    cr.inputs["From Min"].default_value = 0.45; cr.inputs["From Max"].default_value = 0.9
+    cr.inputs["From Min"].default_value = 0.8; cr.inputs["From Max"].default_value = 1.0
     f2 = N("ShaderNodeMath"); f2.operation = 'MULTIPLY'; f2.use_clamp = True
     L(cr.outputs["Result"], f2.inputs[0]); L(nzr.outputs["Result"], f2.inputs[1])
     f2b = N("ShaderNodeMath"); f2b.operation = 'MULTIPLY_ADD'; f2b.use_clamp = True
@@ -517,8 +517,8 @@ def foam_material():
     m = core.material("BHC_Foam")
     nt = m.node_tree
     b = next(n for n in nt.nodes if n.bl_idname == "ShaderNodeBsdfPrincipled")
-    b.inputs["Base Color"].default_value = (0.78, 0.80, 0.80, 1)
-    b.inputs["Roughness"].default_value = 0.6
+    b.inputs["Base Color"].default_value = (0.9, 0.92, 0.92, 1)
+    b.inputs["Roughness"].default_value = 0.9
     b.inputs["Subsurface Weight"].default_value = 0.35
     b.inputs["Subsurface Radius"].default_value = (0.08, 0.1, 0.1)
     b.inputs["Specular IOR Level"].default_value = 0.6
@@ -528,13 +528,23 @@ def foam_material():
 def _whitewater_gn(ocean, mat):
     """Foam clumps on the lip (and down the face after the snap), from the ocean's 'crest' mask."""
     g = GN("BHC_Whitewater")
-    dens = g.add_input("Density", "NodeSocketFloat", 260.0)
+    dens = g.add_input("Density", "NodeSocketFloat", 4000.0)
     oi = g.n("GeometryNodeObjectInfo", transform_space='RELATIVE')
     oi.inputs["Object"].default_value = ocean
     na = g.n("GeometryNodeInputNamedAttribute", data_type='FLOAT')
     na.inputs["Name"].default_value = "crest"
     c = na.outputs["Attribute"]
-    w = g.math("MULTIPLY", g.math("POWER", g.math("MAXIMUM", g.math("SUBTRACT", c, 0.35), 0.0), 1.6), dens)
+    T = g.real_time()
+    brk = g.ramp(T, core.DECISION, core.DECISION + 0.25)
+    thr = g.math("MULTIPLY_ADD", brk, -0.3, 0.84)           # the lip only before the snap, spilling after
+    w = g.math("MULTIPLY", g.math("MAXIMUM", g.math("SUBTRACT", c, thr), 0.0), g.math("MULTIPLY", dens, 6.0))
+    nz = g.n("ShaderNodeTexNoise")
+    nz.inputs["Scale"].default_value = 0.9
+    nz.inputs["Detail"].default_value = 4
+    g.link(g.n("GeometryNodeInputPosition").outputs[0], nz.inputs["Vector"])
+    patchy = g.math("MAXIMUM", g.math("MULTIPLY", g.math("SUBTRACT", nz.outputs["Fac"], 0.45), 4.0), 0.0)
+    w = g.math("MULTIPLY", w, patchy)
+    w = g.math("MULTIPLY", w, g.math("MULTIPLY_ADD", brk, -0.93, 1.0))      # fewer, larger clumps after the break (4 GB VRAM)
     dp = g.n("GeometryNodeDistributePointsOnFaces", distribute_method='RANDOM')
     g.link(oi.outputs["Geometry"], dp.inputs["Mesh"])
     g.link(w, dp.inputs["Density"])
@@ -542,7 +552,7 @@ def _whitewater_gn(ocean, mat):
     # lift each clump slightly off the surface along the normal
     sp = g.n("GeometryNodeSetPosition")
     g.link(dp.outputs["Points"], sp.inputs["Geometry"])
-    g.link(g.vmath("SCALE", dp.outputs["Normal"], scale=g.rand(0.0, 0.05, 3)), sp.inputs["Offset"])
+    g.link(g.vmath("SCALE", dp.outputs["Normal"], scale=g.rand(0.0, 0.03, 3)), sp.inputs["Offset"])
     ico = g.n("GeometryNodeMeshIcoSphere")
     ico.inputs["Radius"].default_value = 1.0
     ico.inputs["Subdivisions"].default_value = 1
@@ -553,13 +563,14 @@ def _whitewater_gn(ocean, mat):
     g.link(sp.outputs[0], iop.inputs["Points"])
     g.link(smm.outputs[0], iop.inputs["Instance"])
     g.link(dp.outputs["Rotation"], iop.inputs["Rotation"])
-    s = g.rand(0.015, 0.075, 4)
-    g.link(g.xyz(s, s, g.math("MULTIPLY", s, 0.45)), iop.inputs["Scale"])
+    s = g.math("MULTIPLY", g.math("POWER", g.rand(0.0, 1.0, 4), 2.0), g.math("MULTIPLY_ADD", brk, 0.045, 0.012))
+    s = g.math("ADD", s, 0.003)
+    g.link(g.xyz(s, s, g.math("MULTIPLY", s, 0.5)), iop.inputs["Scale"])
     g.link(iop.outputs[0], g.out.inputs["Geometry"])
     return g.check()
 
 
-def build_whitewater(coll, ocean, density=260.0):
+def build_whitewater(coll, ocean, density=4000.0):
     me = bpy.data.meshes.new("BHC_Whitewater")
     o = bpy.data.objects.new("BHC_Whitewater", me)
     coll.objects.link(o)

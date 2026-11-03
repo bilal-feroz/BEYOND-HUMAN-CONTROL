@@ -21,21 +21,7 @@ POS = {
     "capsized": (8.5, -4.0),
 }
 SEARCH_OFFSET = Vector((1.0, 1.3, 0.0))   # beam edge only grazes the person until S10
-SWING = (37.0, 40.6)                       # film seconds: the beam slides onto the jacket (S10)
-
-# Message events, film seconds -> robot whose status light pulses. Also drives the animatic clicks.
-EVENTS = [
-    (17.8, "AUV_1"),                                        # S05: echo received
-    (22.65, "AUV_1"),                                       # S06: second echo
-    (25.5, "UAV_2"), (25.65, "UAV_1"), (25.65, "USV_1"), (25.7, "AUV_1"),   # S07: relay asks for reports
-    (27.4, "USV_1"), (27.55, "UAV_2"),                      # reports flow back
-    (29.6, "UAV_2"), (29.75, "USV_1"), (29.75, "UAV_1"),    # S08: fused estimate broadcast
-    (32.9, "USV_1"), (33.05, "UAV_2"),                      # S09: USV bids 0.41
-    (34.6, "USV_1"), (34.75, "UAV_2"),                      # USV withdraws (wave impact risk)
-    (36.8, "UAV_2"), (36.95, "UAV_1"),                      # S10: UAV-1 assigned light & track
-    (39.6, "UAV_1"), (39.75, "UAV_2"),                      # acknowledged
-]
-PINGS = (16.6, 21.5)                                        # sonar pings, film seconds (S05, S06)
+from .story import EVENTS, PINGS, SWING  # noqa: E402  (shared with the edit scripts)
 
 
 def aim(obj, target, axis='X', up='Z'):
@@ -80,7 +66,7 @@ def _usv_path(T):
     """S11: withdraws, turning away to starboard. S12: holds station down-drift of the person."""
     if T >= core.TIME_CUT_T:
         dt = T - core.TIME_CUT_T
-        return 8.2 - 0.12 * dt, -3.6 + 0.08 * dt, 150.0
+        return 9.4 - 0.06 * dt, 5.4 - 0.05 * dt, 215.0
     x, y = POS["usv"]
     h = 18.0
     t = core.DECISION
@@ -103,14 +89,11 @@ def _gust(T, seed):
 def build_heli(coll, f0, f1, target):
     """FX-06: a rescue helicopter's searchlight approaching through the haze (S12)."""
     root = core.empty("Heli", coll, (0, 0, 0), size=2.0)
-    a, b = Vector((-170.0, -95.0, 34.0)), Vector((-105.0, -58.0, 27.0))
+    a, b = Vector((-25.0, 175.0, 32.0)), Vector((-12.0, 105.0, 26.0))
     for f, p in ((f0, a), (f1, b)):
         root.location = p
         root.keyframe_insert("location", frame=f)
-    body = core.principled("BHC_HeliBody", (0.02, 0.022, 0.025), rough=0.4)
-    bm = __import__("bmesh").new()
-    core.bm_sphere(bm, 1.0, scale=(2.6, 1.0, 1.1))
-    core.obj_from_bm("Heli_Body", bm, coll, body, root)
+    # at 120-180 m at night only its lights and beam read; no body
     spot = core.spot_light("Heli_Searchlight", coll, (0, 0, -1.2), (1, 0, -0.3), 450000, angle_deg=6,
                            blend=0.35, temp=5600, radius=0.25, parent=root)
     spot.rotation_mode = 'QUATERNION'
@@ -250,8 +233,6 @@ def build_master(frame, underwater=False, flatten=None, spray_count=90000, air_m
         te1, te2 = t1 + d / fx.SOUND_IN_WATER, t2 + d / fx.SOUND_IN_WATER
         fx.set_inputs(parts, **{"Ping Origin": nose, "Ping T": t1, "Echo Origin": legs, "Echo T": te1,
                                 "Ping2 T": t2, "Echo2 T": te2})
-        for nm, o, t0 in (("BHC_Ping1", nose, t1), ("BHC_Echo1", legs, te1), ("BHC_Ping2", nose, t2), ("BHC_Echo2", legs, te2)):
-            fx.build_sonar_shell(C["FX"], nm, o, t0)
     if heli and realtime_range:
         build_heli(C["LIGHTS"], realtime_range[0], realtime_range[1], (px, py, 0.0))
     bpy.context.view_layer.update()

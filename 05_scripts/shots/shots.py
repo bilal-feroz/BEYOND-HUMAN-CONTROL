@@ -67,7 +67,7 @@ def world(ob, local):
 # ---------------------------------------------------------------- shots
 
 def s01(M, f0, f1):
-    cam = new_cam(M, "CAM_S01", 50, 2.0, 1.0)
+    cam = new_cam(M, "CAM_S01", 50, 2.8, 1.0)
     move(cam, f0, f1, (5.78, 2.78, 1.96), (4.55, 1.5, 1.72), (5.5, 2.5, 1.9), (4.55, 1.5, 1.72), focus=(1.05, 0.95))
     return cam
 
@@ -81,19 +81,34 @@ def s02(M, f0, f1):
 
 def s03(M, f0, f1):
     r = M["uav1"]["root"]
-    cam = new_cam(M, "CAM_S03", 35, 2.8, 1.0)
-    move(cam, f0, f1, world(r, (0.75, 1.05, -0.12)), world(r, (0.02, 0.0, -0.1)),
-         world(r, (0.5, 0.72, -0.1)), world(r, (0.0, -0.1, -0.16)), focus=(1.25, 2.6))
+    cam = new_cam(M, "CAM_S03", 35, 2.8, 1.4)
+    move(cam, f0, f1, world(r, (0.25, 1.45, 0.08)), world(r, (0.05, 0.0, -0.12)),
+         world(r, (-0.02, 0.95, 0.0)), world(r, (-0.1, 0.0, -0.11)), focus=(1.45, 0.98))
+    tame_glare(0.2)
     return cam
 
 
+def tame_glare(k):
+    """Close-ups of the robots: lamps and nav LEDs scaled down so the hardware reads."""
+    for n in ("BHC_SearchLens", "BHC_LED_Red", "BHC_LED_Green", "BHC_LED_White"):
+        m = bpy.data.materials.get(n)
+        if m:
+            for nd in m.node_tree.nodes:
+                if nd.bl_idname == "ShaderNodeEmission":
+                    nd.inputs["Strength"].default_value *= k
+    for o in bpy.data.objects:
+        if o.type == 'LIGHT' and "_NavL" in o.name:
+            o.data.energy *= k
+
+
 def s04(M, f0, f1):
-    cam = new_cam(M, "CAM_S04", 28, 4.0, 5.0)
-    zc = water_z(M, -9.8, -7.6, (f0 + f1) // 2)
+    cam = new_cam(M, "CAM_S04", 35, 4.0, 8.0)
+    zc = water_z(M, -12.6, -9.9, (f0 + f1) // 2)
     u = M["usv"]["root"]
-    tgt = world(u, (0.3, 0, 1.0))
-    move(cam, f0, f1, (-9.9, -7.8, zc + 0.55), tgt, (-9.3, -8.2, zc + 0.7), tgt + Vector((0.4, 0, 0.15)),
-         focus=((tgt - Vector((-9.9, -7.8, zc))).length, (tgt - Vector((-9.3, -8.2, zc))).length))
+    tgt = world(u, (0.6, 0, 1.3))
+    a0, a1 = Vector((-12.6, -9.9, zc + 0.5)), Vector((-12.1, -10.3, zc + 0.6))
+    move(cam, f0, f1, a0, tgt, a1, tgt + Vector((0.3, 0.1, 0.1)), focus=((tgt - a0).length, (tgt - a1).length))
+    tame_glare(0.5)
     return cam
 
 
@@ -123,17 +138,18 @@ def s07(M, f0, f1):
     tgt0, tgt1 = Vector((2.5, -1.0, 0.0)), Vector((3.4, -0.4, 0.0))
     d = (tgt0 - u2).normalized()
     side = d.cross(Vector((0, 0, 1))).normalized()
-    loc0 = u2 - 2.6 * d - 0.55 * side + Vector((0, 0, 0.55))
-    loc1 = loc0 + 7.0 * d
+    loc0 = u2 - 4.8 * d - 1.2 * side + Vector((0, 0, 1.4))
+    loc1 = loc0 + 6.0 * d
     move(cam, f0, f1, loc0, tgt0, loc1, tgt1)
     return cam
 
 
 def s08(M, f0, f1):
     u = M["usv"]["root"]
-    cam = new_cam(M, "CAM_S08", 50, 2.8, 1.4)
-    tgt = world(u, (-0.7, 0.0, 3.03))
-    move(cam, f0, f1, world(u, (0.45, -1.25, 2.95)), tgt, world(u, (0.3, -1.0, 3.0)), tgt, focus=(1.7, 1.4))
+    cam = new_cam(M, "CAM_S08", 40, 2.8, 1.5)
+    tgt0, tgt1 = world(u, (-0.62, -0.12, 3.0)), world(u, (-0.66, -0.14, 3.02))
+    move(cam, f0, f1, world(u, (0.55, -1.2, 3.25)), tgt0, world(u, (0.4, -1.0, 3.2)), tgt1, focus=(1.7, 1.45))
+    tame_glare(0.4)
     return cam
 
 
@@ -152,19 +168,18 @@ def s10(M, f0, f1):
 
 def s11(M, f0, f1):
     """Real time, handheld, riding the water: the wave lifts the camera as it breaks past."""
-    cam = new_cam(M, "CAM_S11", 24, 5.6, 4.5)
+    cam = new_cam(M, "CAM_S11", 28, 5.6, 7.0)
     sc = M["scene"]
     p = M["person"]["root"]
     for f in range(f0, f1 + 1):
         T = core.real_time(f)
         sc.frame_set(f)
-        z = water_z(M, 8.4, 2.6, f)
         hit = _smooth((T - 0.45) / 0.3) * (1 - _smooth((T - 1.6) / 0.8))      # shake peaks as the break passes
         amp = 0.03 + 0.12 * hit
         jit = Vector((amp * math.sin(13.1 * T) + 0.6 * amp * math.sin(31.7 * T),
                       amp * math.sin(11.3 * T + 1.0) + 0.6 * amp * math.sin(27.9 * T),
                       amp * math.sin(17.9 * T + 2.0)))
-        loc = Vector((8.4, 2.6, z + 0.55)) + jit
+        loc = Vector((10.8, 3.6, 1.7)) + jit
         tgt = p.matrix_world.to_translation() + Vector((0, 0, 0.35)) + 2.5 * jit
         _look(cam, loc, tgt, roll=4.0 * hit * math.sin(9.0 * T))
         cam.keyframe_insert("location", frame=f)
@@ -173,14 +188,14 @@ def s11(M, f0, f1):
 
 
 def s12(M, f0, f1):
-    cam = new_cam(M, "CAM_S12", 50, 5.6, 14.0)
-    move(cam, f0, f1, (16.5, 8.5, 3.0), (4.2, -0.3, 2.62), (16.4, 8.45, 3.0), (4.2, -0.3, 2.6))
+    cam = new_cam(M, "CAM_S12", 35, 5.6, 15.0)
+    move(cam, f0, f1, (2.0, -14.5, 4.5), (3.3, 0.6, 3.3), (2.05, -14.35, 4.45), (3.3, 0.6, 3.2))
     return cam
 
 
 SPECS = {
     # shot: (camera fn, placement frame, build kwargs, cull radius, motion blur)
-    "S01": (s01, 60, dict(local_mist=(7000, (3.9, 0.7, 1.0), (5.3, 2.3, 2.6), 0.0008, 0.003)), 0.12, False),
+    "S01": (s01, 60, dict(local_mist=(3500, (3.9, 0.7, 1.0), (5.3, 2.3, 2.6), 0.0008, 0.0026)), 0.12, False),
     "S02": (s02, 168, dict(), 1.2, False),
     "S03": (s03, 264, dict(local_mist=(5000, (1.5, 0.5, 7.8), (4.6, 3.6, 10.2), 0.0006, 0.002)), 0.25, False),
     "S04": (s04, 348, dict(local_mist=(3000, (-8.5, -7.5, -0.5), (-3.0, -2.0, 3.0), 0.0006, 0.002)), 0.8, False),
@@ -190,7 +205,7 @@ SPECS = {
     "S08": (s08, 732, dict(local_mist=(3000, (-8.0, -6.5, 1.5), (-4.0, -3.0, 4.5), 0.0006, 0.0018)), 0.3, False),
     "S09": (s09, 816, dict(), 1.5, False),
     "S10": (s10, 924, dict(), 0.8, False),
-    "S11": (s11, 1000, dict(realtime_range=(985, 1056), spray_count=130000), 0.6, True),
+    "S11": (s11, 1000, dict(realtime_range=(985, 1056), spray_count=100000), 0.6, True),
     "S12": (s12, 1128, dict(realtime_range=(1057, 1200), heli=True), 1.5, True),
 }
 
@@ -242,6 +257,8 @@ def main():
     ap.add_argument("--out", default="previews")
     ap.add_argument("--anim", action="store_true")
     ap.add_argument("--norender", action="store_true")
+    ap.add_argument("--res", default=None, help="WxH, e.g. 1080x1920 for the vertical cut, 2400x3600 for posters")
+    ap.add_argument("--frames", default=None, help="comma list of stills to render (posters)")
     a = ap.parse_args(argv)
     shot = a.shot
     cam_fn, place, kw, cull, mblur = SPECS[shot]
@@ -252,7 +269,11 @@ def main():
     layout.cull_near(M, cam, cull)
     sc = M["scene"]
     sc.frame_start, sc.frame_end = (a.start or f0), (a.end or f1)
-    core.render_setup(sc, pct=a.pct, samples=a.samples, quality=a.quality, motion_blur=mblur)
+    res = tuple(int(v) for v in a.res.split("x")) if a.res else (1920, 1080)
+    core.render_setup(sc, res=res, pct=a.pct, samples=a.samples, quality=a.quality, motion_blur=mblur)
+    if a.res:
+        cam.data.sensor_fit = 'AUTO'          # portrait: the long side keeps the 16:9 horizontal field
+    sc.eevee.motion_blur_steps = 1
     core.comp_setup(sc)
     frame = a.frame or (f0 + f1) // 2
     sc.frame_set(frame)
@@ -277,6 +298,13 @@ def main():
             sc.render.filepath = core.path("06_renders", a.out, shot + sub, f"{shot}{sub}_####")
             bpy.ops.render.render(animation=True)
             outs[side] = os.path.dirname(sc.render.filepath)
+        elif a.frames:
+            for fr in (int(v) for v in a.frames.split(",")):
+                p = core.path("06_renders", a.out, f"{shot}_{a.ver}{sub}_f{fr:04d}.png")
+                sc.render.filepath = p
+                sc.frame_set(fr)
+                bpy.ops.render.render(write_still=True)
+                outs[side] = p
         else:
             p = core.path("06_renders", a.out, f"{shot}_{a.ver}{sub}_f{frame:04d}.png")
             sc.render.filepath = p

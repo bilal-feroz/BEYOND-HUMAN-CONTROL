@@ -378,7 +378,7 @@ def build_usv(coll, name, P):
         ("port", (0.36, 0.62, sheer0 + 0.75), P["led_red"], (1, 0.03, 0.015), 1.2),
         ("stbd", (0.36, -0.62, sheer0 + 0.75), P["led_green"], (0.05, 1, 0.25), 1.2),
         ("stern", (-3.65, 0, sheer0 + 0.42), P["led_white"], (1, 0.95, 0.88), 1.0),
-        ("amber", (mast_x, 0, sheer0 + 2.5), P["led_amber"], (1, 0.5, 0.04), 1.6),
+        ("amber", (mast_x, -0.15, sheer0 + 2.5), P["led_amber"], (1, 0.5, 0.04), 1.6),   # on a bracket, clear of the mast
     ):
         lb = bmesh.new()
         bm_sphere(lb, 0.03, loc=loc, segs=12, rings=6)
@@ -424,7 +424,7 @@ def _usv_details(coll, root, P, z0, mast_x):
         bm_cyl(sens, 0.009, 0.26 + 0.08 * i, loc=(-0.85, yy, z0 + 1.45 + 0.04 * i), segs=8)  # stub antennas
     for s in (1, -1):
         bm_box(sens, (0.08, 0.06, 0.07), loc=(0.36, 0.62 * s, z0 + 0.7))         # nav light housings
-    bm_box(sens, (0.1, 0.08, 0.06), loc=(mast_x, 0, z0 + 2.43))                  # amber housing
+    bm_box(sens, (0.07, 0.12, 0.05), loc=(mast_x, -0.08, z0 + 2.45))             # amber light bracket
     obj_from_bm("USV_1_Sensors", sens, coll, P["graphite"], root)
     ln = bmesh.new()
     bm_cyl(ln, 0.045, 0.01, loc=(mast_x + 0.34, 0, z0 + 2.1), rot=ROT_Y90, segs=20)

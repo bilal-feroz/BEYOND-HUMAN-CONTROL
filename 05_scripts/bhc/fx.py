@@ -48,7 +48,7 @@ def particulate_material():
     at.attribute_name = "pulse"
     mul = nt.nodes.new("ShaderNodeMath")
     mul.operation = 'MULTIPLY'
-    mul.inputs[1].default_value = 9.0
+    mul.inputs[1].default_value = 22.0
     nt.links.new(at.outputs["Fac"], mul.inputs[0])
     b.inputs["Emission Color"].default_value = (0.78, 0.95, 0.86, 1)
     nt.links.new(mul.outputs[0], b.inputs["Emission Strength"])
@@ -196,12 +196,12 @@ def sonar_shell_material():
     out = N("ShaderNodeOutputMaterial")
     lw = N("ShaderNodeLayerWeight")
     lw.inputs["Blend"].default_value = 0.3
-    pw = N("ShaderNodeMath"); pw.operation = 'POWER'; pw.inputs[1].default_value = 3.0
+    pw = N("ShaderNodeMath"); pw.operation = 'POWER'; pw.inputs[1].default_value = 8.0
     nt.links.new(lw.outputs["Facing"], pw.inputs[0])
     fa = N("ShaderNodeAttribute"); fa.attribute_name = "fade"
     mul = N("ShaderNodeMath"); mul.operation = 'MULTIPLY'
     nt.links.new(pw.outputs[0], mul.inputs[0]); nt.links.new(fa.outputs["Fac"], mul.inputs[1])
-    mul2 = N("ShaderNodeMath"); mul2.operation = 'MULTIPLY'; mul2.inputs[1].default_value = 1.6
+    mul2 = N("ShaderNodeMath"); mul2.operation = 'MULTIPLY'; mul2.inputs[1].default_value = 0.5
     nt.links.new(mul.outputs[0], mul2.inputs[0])
     em = N("ShaderNodeEmission"); em.inputs["Color"].default_value = (0.75, 0.95, 0.86, 1)
     nt.links.new(mul2.outputs[0], em.inputs["Strength"])
@@ -268,7 +268,7 @@ def build_particulates(coll, count, bmin, bmax):
     o = _carrier("BHC_Particulates", coll)
     ng = bpy.data.node_groups.get("BHC_Particles") or box_mist_gn("BHC_Particles", particulate_material(), seed=41, subdiv=1, sonar=True)
     core.gn_modifier(o, ng, Count=count, **{"Box Min": bmin, "Box Max": bmax, "Wind": (0.25, 0.08, 0.02),
-                                            "Radius Min": 0.0012, "Radius Max": 0.006})
+                                            "Radius Min": 0.0006, "Radius Max": 0.0026})
     return o
 
 
