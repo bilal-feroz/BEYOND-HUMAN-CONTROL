@@ -7,3 +7,7 @@
 08_audio/**/temp/
 __pycache__/
 *.pyc
+# Large video deliverables are published as GitHub release assets, not committed
+10_deliverables/**/*.mp4
+08_audio/mix/*.wav
+!08_audio/mix/BHC_mix_v001.wav

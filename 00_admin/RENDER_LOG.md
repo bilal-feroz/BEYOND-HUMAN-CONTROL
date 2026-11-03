@@ -17,3 +17,18 @@
 | 11-04 00:58 | S08 | p001 | anim | OK | 72/72 | 98 | half-res preview |
 | 11-04 01:01 | S10 | p001 | anim | OK | 120/120 | 160 | half-res preview |
 | 11-04 01:02 | EDIT | BHC_animatic_v001.mp4 | assemble | OK | 1200/1200 | |  |
+| 11-04 01:22 | S07 | f001 | anim | OK | 96/96 | 735 | final |
+| 11-04 01:36 | S01 | f001 | anim | OK | 120/120 | 1587 | final |
+| 11-04 01:37 | S08 | f001 | anim | OK | 72/72 | 879 | final |
+| 11-04 01:49 | S02 | f001 | anim | OK | 96/96 | 821 | final |
+| 11-04 01:50 | S09 | f001 | anim | OK | 96/96 | 797 | final |
+| 11-04 02:06 | S10 | f001 | anim | OK | 120/120 | 936 | final |
+| 11-04 02:07 | S03 | f001 | anim | OK | 96/96 | 1077 | final |
+| 11-04 02:20 | S04 | f001 | anim | OK | 72/72 | 782 | final |
+| 11-04 02:37 | S12 | f001 | anim | OK | 144/144 | 1866 | final |
+| 11-04 02:37 | S05 | f001 | anim | OK | 96/96 | 978 | final |
+| 11-04 02:50 | S01 | v001 | anim | MISSING FRAMES | 48/120 | 769 | vertical |
+| 11-04 03:17 | S06 | f001 | anim | OK | 120/120 | 2394 | final |
+| 11-04 03:24 | S06 | v001 | anim | MISSING FRAMES | 60/120 | 2027 | vertical |
+| 11-04 03:32 | S11 | f001 | anim | OK | 72/72 | 897 | final |
+| 11-04 03:36 | EDIT | BHC_main_16x9_v001.mp4 | assemble | OK | 1200/1200 | |  |

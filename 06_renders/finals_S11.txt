@@ -1,0 +1,1 @@
+S11: OK 72/72 897s RESULT shot=S11 frames=985-1056 build_s=93.5 render_s=798.3 out=C:\Users\bilal\Desktop\BEYOND-HUMAN-CONTROL\06_renders\finals\S11

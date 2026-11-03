@@ -1,0 +1,2 @@
+S01: MISSING FRAMES 48/120 769s RESULT shot=S01 frames=29-76 build_s=3.0 render_s=761.1 out=C:\Users\bilal\Desktop\BEYOND-HUMAN-CONTROL\06_renders\vertical\S01
+S06: MISSING FRAMES 60/120 2027s RESULT shot=S06 frames=500-559 build_s=4.4 render_s=2017.2 out=C:\Users\bilal\Desktop\BEYOND-HUMAN-CONTROL\06_renders\vertical\S06

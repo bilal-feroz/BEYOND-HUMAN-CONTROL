@@ -260,6 +260,7 @@ def main():
     ap.add_argument("--norender", action="store_true")
     ap.add_argument("--res", default=None, help="WxH, e.g. 1080x1920 for the vertical cut, 2400x3600 for posters")
     ap.add_argument("--frames", default=None, help="comma list of stills to render (posters)")
+    ap.add_argument("--depth", default="16", help="PNG bit depth; 8 renders with dither (social cut, disk)")
     a = ap.parse_args(argv)
     shot = a.shot
     cam_fn, place, kw, cull, mblur = SPECS[shot]
@@ -275,6 +276,8 @@ def main():
     if a.res:
         cam.data.sensor_fit = 'AUTO'          # portrait: the long side keeps the 16:9 horizontal field
     sc.eevee.motion_blur_steps = 1
+    sc.render.image_settings.color_depth = a.depth
+    sc.render.dither_intensity = 1.0
     core.comp_setup(sc)
     frame = a.frame or (f0 + f1) // 2
     sc.frame_set(frame)

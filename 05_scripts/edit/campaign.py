@@ -24,7 +24,7 @@ WORK = os.path.join(ROOT, "09_edit", "work")
 DELIV = os.path.join(ROOT, "10_deliverables")
 MASTER = os.path.join(DELIV, "main_16x9", "BHC_main_16x9_v001.mp4")
 MIX = os.path.join(ROOT, "08_audio", "mix", "BHC_mix_v001.wav")
-WHITE, AMBER, ORANGE = "&HF2F2F2&", "&H1F8CFF&", "&H005FFA&"
+WHITE, AMBER, ORANGE = "&HF2F2F2&", "&H3CBEFF&", "&H005FFA&"   # amber kept yellow: orange is only the person
 
 
 def run(cmd, cwd=WORK):
@@ -105,11 +105,11 @@ def wav_write(path, x, sr=48000):
 
 def explainer():
     """25 s: the four research capabilities, drawn over the overhead plate (S07) where they happen."""
-    P = json.load(open(os.path.join(WORK, "S07_f0650_points.json")))
+    P = json.load(open(os.path.join(WORK, "S07_f0696_points.json")))
     p = {k: (v["x"], v["y"]) for k, v in P.items()}
-    plate = os.path.join(ROOT, "06_renders", "finals", "S07", "S07_0650.png")
-    if not os.path.exists(plate):
-        plate = os.path.join(ROOT, "06_renders", "previews", "S07", "S07_0650.png")
+    if not (0 <= p["UAV_2"][0] <= 1920 and 0 <= p["UAV_2"][1] <= 1080):
+        p["UAV_2"] = (1790.0, 975.0)          # relay is above and behind the camera: mark it at the frame edge
+    plate = os.path.join(ROOT, "06_renders", "finals", "S07", "S07_0696.png")
     styles = [
         "H1,Bahnschrift,34,&H00F4F4F4,&H000000FF,&H00000000,&H00000000,0,0,0,0,100,100,3,0,1,0,0,7,96,96,84,1",
         "H2,Bahnschrift,22,&H40F4F4F4,&H000000FF,&H00000000,&H00000000,0,0,0,0,100,100,1,0,1,0,0,7,96,96,132,1",
@@ -130,16 +130,17 @@ def explainer():
     e.append(ev(A + 0.2, B, "H2", "{\\fad(300,300)}Each machine senses part of the scene. None senses all of it."))
     for i, (key, txt, dx, dy) in enumerate([
             ("UAV_1", "UAV-1 · camera — person hidden by spray", -40, -64),
-            ("USV_1", "USV-1 · radar — sees the crest, not the person", 34, 10),
-            ("AUV_1", "AUV-1 (−4.8 m) · sonar — contact at 6.2 m", 34, 26)]):
+            ("USV_1", "USV-1 · radar — sees the crest, not the person", -30, 66),
+            ("AUV_1", "AUV-1 (−4.8 m) · sonar — contact at 6.2 m", -40, 70)]):
         t = A + 0.5 + i * 1.0
         x, y = p[key]
         e.append(ring(x, y, 22, WHITE, t, B + 10.6 if key != "AUV_1" else B + 10.6))
         e.append(line(x + 16, y + (dy > 0) * 10 - (dy < 0) * 16, x + dx, y + dy, WHITE, t, B))
-        e.append(label(x + dx + 6, y + dy - 12 if dy > 0 else y + dy - 26, txt, t + 0.2, B))
+        lx = x + dx + 6 if dx > 0 else x + dx - 560
+        e.append(label(lx, y + dy - 12 if dy > 0 else y + dy - 26, txt, t + 0.2, B))
     x, y = p["PERSON"]
     e.append(ring(x, y, 16, ORANGE, A + 3.4, 19.0, w=2.4, alpha="&H00&"))
-    e.append(label(x - 250, y + 26, "person in the water", A + 3.6, B, color=ORANGE))
+    e.append(label(x - 360, y + 52, "person in the water", A + 3.6, B, color=ORANGE))
     (ax, ay), (bx, by) = p["CREST_A"], p["CREST_B"]
     e.append(line(ax, ay, bx, by, WHITE, A + 4.2, B, dash=True, draw=1.0, alpha="&H70&"))
     e.append(label(ax + 20, ay + 6, "breaking crest · 3 m · moving 6.4 m/s", A + 4.6, B))
@@ -149,7 +150,7 @@ def explainer():
     e.append(ev(A + 0.2, B, "H2", "{\\fad(300,300)}They share what they see, and how sure they are."))
     u2 = p["UAV_2"]
     e.append(ring(*u2, 22, WHITE, A + 0.2, 19.0))
-    e.append(label(u2[0] - 330, u2[1] + 24, "UAV-2 · relay, 35 m up", A + 0.4, B))
+    e.append(label(u2[0] - 420, u2[1] + 20, "UAV-2 · relay, 35 m above (out of frame)", A + 0.4, B))
     for i, (a_, b_, dash, note) in enumerate([("AUV_1", "USV_1", True, "acoustic"), ("USV_1", "UAV_2", False, "radio"),
                                               ("UAV_1", "UAV_2", False, "radio")]):
         t = A + 0.8 + i * 0.8
@@ -187,7 +188,7 @@ def explainer():
     s12 = os.path.join(ROOT, "06_renders", "finals", "S12")
     if not os.path.exists(os.path.join(s12, "S12_1060.png")):
         s12 = os.path.join(ROOT, "06_renders", "previews", "S12")
-    vf = (f"[0:v]scale=1920:1080,format=rgb48le,eq=brightness=-0.04:saturation=0.85,trim=duration=19,setpts=PTS-STARTPTS[a];"
+    vf = (f"[0:v]scale=1920:1080,format=rgb48le,eq=brightness=0.02:gamma=1.18:saturation=0.85,trim=duration=19,setpts=PTS-STARTPTS[a];"
           f"[1:v]scale=1920:1080,format=rgb48le,trim=duration=4,setpts=PTS-STARTPTS[b];"
           f"[2:v]format=rgb48le[c];[a][b][c]concat=n=3:v=1:a=0,noise=c0s=5:c1s=5:c2s=5:allf=t,format=yuv420p,"
           f"vignette=angle=PI/5,fade=t=in:st=0:d=0.6,fade=t=out:st=24.4:d=0.6,subtitles=explainer.ass[v]")
