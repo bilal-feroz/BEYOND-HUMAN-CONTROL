@@ -1,0 +1,9 @@
+# Heavy, regenerable outputs stay local (rebuild with 05_scripts)
+06_renders/**/*.png
+06_renders/**/logs/
+04_scenes/*.blend
+*.blend1
+09_edit/work/
+08_audio/**/temp/
+__pycache__/
+*.pyc
