@@ -326,4 +326,5 @@ def main():
           f"build_s={t1 - t0:.1f} render_s={time.time() - t1:.1f} out={outs['']}")
 
 
-main()
+if __name__ == "__main__":
+    main()

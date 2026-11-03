@@ -213,3 +213,11 @@ Finals render as 16-bit PNG sequences to `06_renders/finals/Sxx/`. The grade and
 | 2026-11-03 | S06 waterline made with a two-pass dome-port composite | Claude |
 | 2026-11-03 | Film grain/dither is part of the grade, not optional | Claude |
 | 2026-11-03 | S02 camera: low at the foot of the face, 18 mm, (6.3, 1.4) → crest lip | Claude |
+| 2026-11-04 | Story timeline as shared data (`bhc/story.py`): one source for status-light pulses, clicks, pings, VO cues and data lines | Claude |
+| 2026-11-04 | Information is shown only by physical cues: amber status LEDs pulse on each message, the relay drone's strobe fires, sonar fronts make suspended particles glint. A geometric sonar shell was tried and removed because it read as a HUD circle | Claude |
+| 2026-11-04 | Whitewater: fine froth on the very lip, broken by noise; it spreads down the face only after the snap. Large clumps read as rocks | Claude |
+| 2026-11-04 | Breaking: after 0.300 s the lip pitches forward (+35 % lean) and the wave loses 42 % of its height over 1.6 s; spray rate and speed rise | Claude |
+| 2026-11-04 | S12 is a time cut to 21:47:14: the wave has passed, UAV-1 holds the jacket in light, USV-1 waits down-drift, and a helicopter searchlight approaches from the coast side (lights only) | Claude |
+| 2026-11-04 | The keel-droplet clock is not in the 12-shot cut (too small to read at any planned framing); the timecode carries the clock | Claude |
+| 2026-11-04 | ElevenLabs credits ran out (10 left, 380 needed). The film carries a processed SAPI scratch VO (pitched −2.6 st, EQ, compression). **It must be replaced before release**; swap the WAVs in `08_audio/vo/final/` and rebuild with `sound.py --vo final` | Claude |
+| 2026-11-04 | Project moved from the session scratch folder to `Desktop/BEYOND-HUMAN-CONTROL` and pushed to GitHub; render frames and .blend files are git-ignored (disk: 15 GB free) | Claude |

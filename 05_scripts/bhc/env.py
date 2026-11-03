@@ -536,7 +536,7 @@ def _whitewater_gn(ocean, mat):
     c = na.outputs["Attribute"]
     T = g.real_time()
     brk = g.ramp(T, core.DECISION, core.DECISION + 0.25)
-    thr = g.math("MULTIPLY_ADD", brk, -0.3, 0.84)           # the lip only before the snap, spilling after
+    thr = g.math("MULTIPLY_ADD", brk, -0.12, 0.84)          # the lip only before the snap, a little more after
     w = g.math("MULTIPLY", g.math("MAXIMUM", g.math("SUBTRACT", c, thr), 0.0), g.math("MULTIPLY", dens, 6.0))
     nz = g.n("ShaderNodeTexNoise")
     nz.inputs["Scale"].default_value = 0.9
@@ -544,7 +544,8 @@ def _whitewater_gn(ocean, mat):
     g.link(g.n("GeometryNodeInputPosition").outputs[0], nz.inputs["Vector"])
     patchy = g.math("MAXIMUM", g.math("MULTIPLY", g.math("SUBTRACT", nz.outputs["Fac"], 0.45), 4.0), 0.0)
     w = g.math("MULTIPLY", w, patchy)
-    w = g.math("MULTIPLY", w, g.math("MULTIPLY_ADD", brk, -0.93, 1.0))      # fewer, larger clumps after the break (4 GB VRAM)
+    # after the break the crest mask balloons (2M instances crashed the 4 GB GPU): far fewer, larger clumps
+    w = g.math("MULTIPLY", w, g.math("MULTIPLY_ADD", brk, -0.985, 1.0))
     dp = g.n("GeometryNodeDistributePointsOnFaces", distribute_method='RANDOM')
     g.link(oi.outputs["Geometry"], dp.inputs["Mesh"])
     g.link(w, dp.inputs["Density"])

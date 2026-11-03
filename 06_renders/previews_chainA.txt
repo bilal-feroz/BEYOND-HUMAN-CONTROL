@@ -1,0 +1,2 @@
+S11: FAILED  295s 
+S01: OK 120/120 215s RESULT shot=S01 frames=1-120 build_s=3.2 render_s=204.3 out=C:\Users\bilal\Desktop\BEYOND-HUMAN-CONTROL\06_renders\previews\S01
