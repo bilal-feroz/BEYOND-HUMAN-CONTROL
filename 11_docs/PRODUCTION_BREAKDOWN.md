@@ -138,7 +138,7 @@ Status is in `00_admin/CHECKLIST.md`. Videos are GitHub release **v1.0** assets;
 ```
 
 ```bash
-python 05_scripts/run_shots.py --shots S01 S02 S03 S04 S05 S06 S07 S08 S09 S10 S11 S12 --anim --ver f001 --out finals --pct 100 --samples 48
+python 05_scripts/run_shots.py --shots S01 S02 S03 S04 S05 S06 S07 S08 S09 S10 S11 S12 --anim --ver f001 --out finals --pct 100 --samples 40
 ```
 
 ```bash
