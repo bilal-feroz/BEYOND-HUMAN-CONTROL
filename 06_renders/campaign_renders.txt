@@ -1,2 +1,8 @@
 S01: MISSING FRAMES 48/120 769s RESULT shot=S01 frames=29-76 build_s=3.0 render_s=761.1 out=C:\Users\bilal\Desktop\BEYOND-HUMAN-CONTROL\06_renders\vertical\S01
 S06: MISSING FRAMES 60/120 2027s RESULT shot=S06 frames=500-559 build_s=4.4 render_s=2017.2 out=C:\Users\bilal\Desktop\BEYOND-HUMAN-CONTROL\06_renders\vertical\S06
+S10: MISSING FRAMES 62/120 962s RESULT shot=S10 frames=889-950 build_s=3.1 render_s=952.5 out=C:\Users\bilal\Desktop\BEYOND-HUMAN-CONTROL\06_renders\vertical\S10
+S12: MISSING FRAMES 139/144 2175s RESULT shot=S12 frames=1057-1195 build_s=77.8 render_s=2091.3 out=C:\Users\bilal\Desktop\BEYOND-HUMAN-CONTROL\06_renders\vertical\S12
+S02: OK  147s RESULT shot=S02 frames=121-168 build_s=3.2 render_s=139.1 out=C:\Users\bilal\Desktop\BEYOND-HUMAN-CONTROL\06_renders\posters\S02_post_f0168.png
+S06: OK  256s RESULT shot=S06 frames=481-540 build_s=3.9 render_s=247.4 out=C:\Users\bilal\Desktop\BEYOND-HUMAN-CONTROL\06_renders\posters\S06_post_f0540.png
+S10: OK  97s RESULT shot=S10 frames=865-924 build_s=2.7 render_s=89.9 out=C:\Users\bilal\Desktop\BEYOND-HUMAN-CONTROL\06_renders\posters\S10_post_f0980.png
+CAMPAIGN RENDERS DONE

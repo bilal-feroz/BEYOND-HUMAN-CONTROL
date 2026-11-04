@@ -6,6 +6,14 @@ At night, in a shamal on the Arabian Gulf, a mixed robot swarm (two drones, an u
 
 > A dramatization. It does not claim that TII has developed any capability shown.
 
+## Watch
+
+- **Main film (50 s):** `BHC_main_16x9_v001_web.mp4` in [release v1.0](https://github.com/bilal-feroz/BEYOND-HUMAN-CONTROL/releases/tag/v1.0)
+- **Also in the release:** the 15 s vertical social cut, the 6 s teaser, the 25 s research explainer, and the reviewed animatic
+- **In this repo:** posters in `10_deliverables/posters/` (2400×3600), LinkedIn creatives in `10_deliverables/linkedin/` (1080×1350)
+
+> **Placeholder voice:** the narration is a scratch voice until the final take is recorded (ElevenLabs credits ran out). See `00_admin/CHECKLIST.md` → Known follow-ups.
+
 ## Where things are
 
 | Folder | Contents |

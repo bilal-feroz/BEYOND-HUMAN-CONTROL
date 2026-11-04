@@ -68,8 +68,15 @@
 
 ## 4. Look and rendering
 
+**Render statistics (finals):**
+- 1,200 frames at 1080p (S06 rendered twice for the dome port), 40 TAA samples
+- 13,749 s (3.8 h) of machine time, run as two parallel chains plus S11 alone, so about 2.5 h wall-clock on an RTX 3050 Laptop GPU (4 GB)
+- Per shot: from S07 at 7.7 s/frame to S12 at 13 s/frame and the two-pass S06 at 20 s/frame
+- Campaign: 412 native 9:16 frames (32 samples, dithered 8-bit) and three 2400×3600 stills (96 samples)
+- Logged failures: 2, both S11 out-of-GPU-memory from the whitewater instance count; fixed by the cap and re-rendered
+
 **EEVEE settings:**
-- 1920×1080; 64 TAA samples (tests), 48 (finals)
+- 1920×1080; 64 TAA samples (tests), 40 (finals), 8 (previews at 50 %)
 - screen-space ray tracing
 - volumetrics: 4 px tiles, 64 slices, end 220 m, volumetric shadows on
 - AgX, Medium High Contrast look, exposure +1.8
@@ -106,7 +113,16 @@
 
 ## 6. Deliverables
 
-See `00_admin/CHECKLIST.md` for status. Files are in `10_deliverables/`: main film, 15 s 9:16 social cut, 6 s teaser, 3 posters (2400×3600), 25 s research explainer, 3 LinkedIn creatives (1080×1350).
+Status is in `00_admin/CHECKLIST.md`. Videos are GitHub release **v1.0** assets; images are in `10_deliverables/`.
+
+| Deliverable | How it was built |
+|---|---|
+| Main film, 50 s | `assemble.py` on the finals. Two encodes: a crf-16 master (~79 Mbps, because grain is expensive) and a 10 Mbps web version (`-tune grain`) |
+| Social cut, 15 s, 9:16 | Native 1080×1920 re-renders of S01, S06, S10, S11 and S12 (a portrait camera keeps the long-side field). Picture and the master mix are cut at the same film times, so VO and SFX stay in sync. Stacked title |
+| Teaser, 6 s | Cut from the master: frozen spray under a ticking clock (2.5 s), the snap (1.75 s), then the title with "0.300 s" and a low tone |
+| Posters ×3, 2400×3600 | Portrait stills of S02, S06 and S10 at 96 samples; grain, vignette, a soft type-protection gradient; tagline, title, credit, disclaimer |
+| Explainer, 25 s | The last S07 frame as the plate. Robot positions are projected through the shot camera (`tools/project_points.py`), so markers and leader lines sit on the real objects. Chapters: 01 Perception, 02 Communication (message lines drawn onto the off-frame relay), 03 Decision (bid panel; USV-1 withdraws, UAV-1 assigned), 04 Action (S12 footage), then an end card with ARRC's four research areas |
+| LinkedIn ×3, 1080×1350 | 4:5 crops of the posters with one headline, one line of body text, and a credit |
 
 ## 7. Known limitations
 
@@ -118,7 +134,7 @@ See `00_admin/CHECKLIST.md` for status. Files are in `10_deliverables/`: main fi
 ## 8. Reproduce
 
 ```bash
-"C:/Program Files/Blender Foundation/Blender 5.2/blender.exe" -b --factory-startup --python-exit-code 1 -P 05_scripts/shots/shots.py -- --shot S05 --anim --pct 100 --samples 48 --ver f001 --out finals
+"C:/Program Files/Blender Foundation/Blender 5.2/blender.exe" -b --factory-startup --python-exit-code 1 -P 05_scripts/shots/shots.py -- --shot S05 --anim --pct 100 --samples 40 --ver f001 --out finals
 ```
 
 ```bash

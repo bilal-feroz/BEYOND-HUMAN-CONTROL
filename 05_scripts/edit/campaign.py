@@ -318,7 +318,7 @@ def social():
             if fa <= da < fb and "assigned" in txt:
                 e.append(ev(t0 + da - fa, t0 + min(db, fb) - fa, "DATA", "{\\fad(180,200)}" + txt))
     title_t = t_s12 + (S.TITLE_IN - S.BLACK[1])
-    e.append(ev(title_t, dur, "TITLE", "{\\fad(800,0)\\pos(540,900)}BEYOND{\\N}HUMAN{\\N}CONTROL"))
+    e.append(ev(title_t, dur, "TITLE", "{\\fad(800,0)\\pos(540,900)}BEYOND\\NHUMAN\\NCONTROL"))
     e.append(ev(title_t + 0.6, dur, "SUB", "{\\fad(700,0)\\pos(540,1180)}TII  ·  Autonomous Robotics Research Center"))
     write(os.path.join(WORK, "social.ass"), ass_header(1080, 1920, styles) + "".join(e))
     out = os.path.join(DELIV, "social_9x16", "BHC_social_15s_9x16_v001.mp4")
@@ -339,7 +339,7 @@ POSTERS = [
 LINKEDIN = [
     ("L1", "P1_the_instant", "0.300 s", "The time a robot swarm needs to see, share, decide and act. About the time it takes you to blink."),
     ("L2", "P2_waterline", "Four machines. One picture.", "A drone, a surface vessel and an underwater vehicle each see part of the scene. Together they see all of it."),
-    ("L3", "P3_assigned", "The closest machine is not always the right one.", "A task auction, not a leader: the swarm assigns each job to the machine best placed to do it."),
+    ("L3", "P3_assigned", "The closest machine is\\Nnot always the right one.", "A task auction, not a leader: the swarm assigns each job to the machine best placed to do it."),
 ]
 
 
@@ -358,9 +358,11 @@ def posters():
              ev(0, 10, "DISC", "A dramatization inspired by ARRC's public research areas.")]
         write(os.path.join(WORK, f"{name}.ass"), ass_header(2400, 3600, styles) + "".join(e))
         out = os.path.join(out_dir, f"BHC_{name}_2400x3600.png")
-        run(["ffmpeg", "-loglevel", "error", "-y", "-i", os.path.join(src, still), "-vf",
-             f"format=rgb48le,noise=c0s=5:c1s=5:c2s=5,format=rgb24,vignette=angle=PI/4.5,"
-             f"drawbox=y=ih*0.70:w=iw:h=ih*0.30:c=black@0.0:t=fill,subtitles={name}.ass", "-frames:v", "1", out])
+        # soft dark gradient under the type so the tagline holds over bright water
+        grad = "color=black:s=2400x3600,format=rgba,geq=r=0:g=0:b=0:a='200*clip((Y-H*0.60)/(H*0.22)\,0\,1)'"
+        run(["ffmpeg", "-loglevel", "error", "-y", "-i", os.path.join(src, still), "-f", "lavfi", "-i", grad,
+             "-filter_complex", f"[0]format=rgb48le,noise=c0s=5:c1s=5:c2s=5,format=rgb24,vignette=angle=PI/4.5[b];"
+             f"[b][1]overlay=format=auto,subtitles={name}.ass", "-frames:v", "1", out])
         run(["ffmpeg", "-loglevel", "error", "-y", "-i", out, "-q:v", "2", out.replace(".png", ".jpg")])
         print("RESULT poster", out)
 
@@ -373,8 +375,9 @@ def linkedin():
               "CRED,Consolas,22,&H50F2F2F2,&H000000FF,&H00000000,&H00000000,0,0,0,0,100,100,2,0,1,0,0,1,72,72,60,1"]
     for name, poster, head, body in LINKEDIN:
         src = os.path.join(ROOT, "06_renders", "posters", dict((p[0], p[1]) for p in POSTERS)[poster])
-        e = [ev(0, 10, "HEAD", f"{{\\pos(72,1000)}}{head}"),
-             ev(0, 10, "BODY", f"{{\\pos(72,1090)\\q0}}{body}"),
+        extra = 74 * head.count("\\N")              # two-line headlines push the body down
+        e = [ev(0, 10, "HEAD", f"{{\\pos(72,{1000 - extra // 2})}}{head}"),
+             ev(0, 10, "BODY", f"{{\\pos(72,{1090 + extra // 2})\\q0}}{body}"),
              ev(0, 10, "CRED", "BEYOND HUMAN CONTROL  ·  TII · ARRC")]
         write(os.path.join(WORK, f"{name}.ass"), ass_header(1080, 1350, styles) + "".join(e))
         out = os.path.join(out_dir, f"BHC_LinkedIn_{name}_1080x1350.png")

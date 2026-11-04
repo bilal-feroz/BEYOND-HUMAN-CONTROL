@@ -32,3 +32,9 @@
 | 11-04 03:24 | S06 | v001 | anim | MISSING FRAMES | 60/120 | 2027 | vertical |
 | 11-04 03:32 | S11 | f001 | anim | OK | 72/72 | 897 | final |
 | 11-04 03:36 | EDIT | BHC_main_16x9_v001.mp4 | assemble | OK | 1200/1200 | |  |
+| 11-04 03:40 | S10 | v001 | anim | MISSING FRAMES | 62/120 | 962 | vertical |
+| 11-04 03:48 | S11 | v001 | anim | MISSING FRAMES | 43/72 | 936 | vertical |
+| 11-04 04:16 | S12 | v001 | anim | MISSING FRAMES | 139/144 | 2175 | vertical |
+| 11-04 04:18 | S02 | post | still | OK |  | 147 | poster |
+| 11-04 04:23 | S06 | post | still | OK |  | 256 | poster |
+| 11-04 04:24 | S10 | post | still | OK |  | 97 | poster |
